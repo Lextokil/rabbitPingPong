@@ -1,6 +1,32 @@
-version: "3.3"
+version: "3"
 
 services:
+  rabbitmq:
+    image: coisa2004/rabbitmq-delay
+    restart: always
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    container_name: rabbitmq-delay
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rabbitmq
+      MONGO_INITDB_ROOT_PASSWORD: rabbitmq
+    ports:
+      - "27017:27017"
+
   ping:
     build:
       dockerfile: ping.dockerfile
@@ -9,34 +35,19 @@ services:
       - 8090:8090
     depends_on:
       - rabbitmq
-    network_mode: "host"
+    command: ["./wait-for-it.sh", "rabbitmq:15672", "-jar", "java", "ping.jar"]
+    links:
+      - rabbitmq
 
   pong:
     build:
       dockerfile: pong.dockerfile
       context: ./
     ports:
-      - 8080:8080
+      - 8081:8081
     depends_on:
       - mongo
       - rabbitmq
-    network_mode: "host"
-
-  mongo:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: rabbitmq
-      MONGO_INITDB_ROOT_PASSWORD: rabbitmq
-    ports:
-      - "27017:27017"
-
-  rabbitmq:
-    image: coisa2004/rabbitmq-delay
-    hostname: rabbit
-    environment:
-       - RABBITMQ_DEFAULT_USER=admin
-       - RABBITMQ_DEFAULT_PASS=admin
-    container_name: rabbitmq-delay
-    ports:
-       - "5672:5672"
-       - "15672:15672"
+    links:
+      - mongo
+      - rabbitmq

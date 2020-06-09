@@ -1,9 +1,9 @@
-FROM maven:3.6.3-jdk-11-slim AS build
+FROM maven:3.6.1-jdk-11-slim AS build
 COPY ./ ./
-RUN mvn clean package -pl pong:pong -am -DskipTests -e
+RUN mvn clean package -pl pong -am -DskipTests
 
-FROM openjdk:11.0.3-jre-slim-stretch
+FROM openjdk:11-jdk-slim
 MAINTAINER cadu
 COPY --from=build /pong/target/pong-0.0.1-SNAPSHOT.jar /pong.jar
-ENTRYPOINT ["java", "-jar", "/ping.jar"]
+CMD ["java", "-jar", "/pong.jar"]
 EXPOSE 8080
