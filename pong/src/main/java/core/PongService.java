@@ -26,7 +26,7 @@ public class PongService {
 
     private Connection createConnection() throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("localhost");
+        connectionFactory.setHost("rabbitmq");
         connectionFactory.setUsername("admin");
         connectionFactory.setPassword("admin");
         return connectionFactory.newConnection();

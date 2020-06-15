@@ -13,12 +13,8 @@ import java.util.List;
 @Service
 public class DbTransferJobService {
 
-    private final CoreDBService coreDBService;
-
     @Autowired
-    public DbTransferJobService(CoreDBService coreDBService) {
-        this.coreDBService = coreDBService;
-    }
+    private CoreDBService coreDBService;
 
     @Transactional
     public void transferAllDataFromH2ToMongo() {
