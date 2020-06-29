@@ -1,6 +1,5 @@
 package core.decorator;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,42 +8,28 @@ import java.util.List;
 @Service
 public class CoreDBService {
 
-    @Autowired
-    private DbMongoService dbMongoService;
 
-    @Autowired
-    private DbH2Service dbH2Service;
+    private final IPongRepository iPongRepository;
 
-
-    public PongDTO mongoSaveOrUpdate(PongDTO pongDTO) {
-        return new DatabaseDecorator(dbMongoService).saveOrUpdate(pongDTO);
+    public CoreDBService(IPongRepository iPongRepository) {
+        this.iPongRepository = iPongRepository;
     }
 
-    public void mongoDeleteAll() {
-        new DatabaseDecorator(dbMongoService).deleteAll();
+
+    public PongDTO SaveOrUpdate(PongDTO pongDTO) {
+        return iPongRepository.saveOrUpdate(pongDTO);
     }
 
-    public List<PongDTO> mongoFindAll() {
-        return new DatabaseDecorator(dbMongoService).findAll();
+    public void DeleteAll() {
+        iPongRepository.deleteAll();
     }
 
-    public List<PongDTO> mongoSaveAll(List<PongDTO> pongDTOS) {
-        return new DatabaseDecorator(dbMongoService).saveAll(pongDTOS);
+    public List<PongDTO> FindAll() {
+        return  iPongRepository.findAll();
     }
 
-    public PongDTO h2SaveOrUpdate(PongDTO pongDTO) {
-        return new DatabaseDecorator(dbH2Service).saveOrUpdate(pongDTO);
+    public List<PongDTO> SaveAll(List<PongDTO> pongDTOS) {
+        return iPongRepository.saveAll(pongDTOS);
     }
 
-    public void h2DeleteAll() {
-        new DatabaseDecorator(dbH2Service).deleteAll();
-    }
-
-    public List<PongDTO> h2FindAll() {
-        return new DatabaseDecorator(dbH2Service).findAll();
-    }
-
-    public List<PongDTO> h2SaveAll(List<PongDTO> pongDTOS) {
-        return new DatabaseDecorator(dbH2Service).saveAll(pongDTOS);
-    }
 }

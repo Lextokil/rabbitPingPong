@@ -4,6 +4,7 @@ import core.dbh2.PongH2;
 import core.dbh2.PongH2Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,8 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class DbH2Service implements DatabaseInterface {
-
+public class DbH2Repository implements IPongRepository {
 
     @Autowired
     private PongH2Repository pongH2Repository;
@@ -40,8 +40,8 @@ public class DbH2Service implements DatabaseInterface {
 
     @Override
     public List<PongDTO> saveAll(List<PongDTO> pongDTOS) {
-        List<PongH2> pongH2s = pongDTOS.stream().map(pongDTO -> new PongH2(pongDTO.getId(),pongDTO.getMsg(),pongDTO.getDataProcessamento())).collect(Collectors.toList());
+        List<PongH2> pongH2s = pongDTOS.stream().map(pongDTO -> new PongH2(pongDTO.getId(), pongDTO.getMsg(), pongDTO.getDataProcessamento())).collect(Collectors.toList());
         pongH2Repository.saveAll(pongH2s);
-        return new ArrayList<PongDTO>(pongH2s.stream().map(pongH2 -> new PongDTO(pongH2.getId(),pongH2.getMsg(), pongH2.getDataProcessamento())).collect(Collectors.toList()));
+        return new ArrayList<PongDTO>(pongH2s.stream().map(pongH2 -> new PongDTO(pongH2.getId(), pongH2.getMsg(), pongH2.getDataProcessamento())).collect(Collectors.toList()));
     }
 }

@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  rabbitmq:
+    image: coisa2004/rabbitmq-delay
+    restart: always
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - pingpong_shared
+
+networks:
+  pingpong_shared:
+

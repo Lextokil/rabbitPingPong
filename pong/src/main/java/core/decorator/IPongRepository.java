@@ -3,7 +3,7 @@ package core.decorator;
 
 import java.util.List;
 
-public interface DatabaseInterface {
+public interface IPongRepository {
 
     List<PongDTO> findAll();
 

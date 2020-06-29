@@ -1,47 +1,29 @@
 version: "3.3"
 
 services:
-  rabbitmq:
-    image: coisa2004/rabbitmq-delay
-    restart: always
-    hostname: rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
-    container_name: rabbitmq-delay
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: rabbitmq
-      MONGO_INITDB_ROOT_PASSWORD: rabbitmq
-    ports:
-      - "27017:27017"
-
   ping:
-    build:
-      dockerfile: ping.dockerfile
-      context: ./
+    image: lestokil/ping:latest
     ports:
       - 8090:8090
-    depends_on:
-      - rabbitmq
-    links:
-      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=admin
+      - RABBIT_PASSWORD=admin
+    networks:
+      - pingpong_shared
 
   pong:
-    build:
-      dockerfile: pong.dockerfile
-      context: ./
+    image: lestokil/pong:latest
     ports:
       - 8082:8082
-    depends_on:
-      - mongo
-      - rabbitmq
-    links:
-      - mongo
-      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_USER=admin
+      - RABBIT_PASSWORD=admin
+    networks:
+      - pingpong_shared
+
+networks:
+  pingpong_shared:
+    external:
+      name: docker_pingpong_shared
